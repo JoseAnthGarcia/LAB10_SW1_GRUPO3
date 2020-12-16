@@ -11,6 +11,7 @@ import Daos.JobHistoryDao;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -146,10 +147,9 @@ public class EmployeeServlet extends HttpServlet {
 
                             if (emp != null) {
                                 request.setAttribute("empleado", emp);
-                                /*
-                                Inserte su código aquí
-                                 */
-
+                                JobHistoryDao jobHistoryDao = new JobHistoryDao();
+                                ArrayList<JobHistory> listaJobHistory=jobHistoryDao.listarJobHistories(employeeId);
+                                request.setAttribute("listaJobHistory",listaJobHistory);
                                 view = request.getRequestDispatcher("employees/formularioEditar.jsp");
                                 view.forward(request, response);
                             } else {
