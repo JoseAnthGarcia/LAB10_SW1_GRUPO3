@@ -184,9 +184,10 @@ public class EmployeeServlet extends HttpServlet {
 
                     break;
                 case "est":
-                     /*
-                Inserte su código aquí
-                 */
+                    request.setAttribute("listaEmpRegion", employeeDao.listaEmpleadosPorRegion());
+                    request.setAttribute("listaSalario", employeeDao.listaSalarioPorDepartamento());
+                    view = request.getRequestDispatcher("employees/estadisticas.jsp");
+                    view.forward(request, response);
                     break;
         }
     }

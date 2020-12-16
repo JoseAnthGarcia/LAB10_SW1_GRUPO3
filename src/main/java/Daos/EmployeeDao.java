@@ -4,6 +4,8 @@ import Beans.Department;
 import Beans.Employee;
 import Beans.Job;
 import Dtos.EmpleadosPorRegionDto;
+import Dtos.SalarioPorDepartamentoDto;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -203,18 +205,77 @@ public class EmployeeDao extends DaoBase {
 
 
     public Employee validarUsuarioPasswordHash(String username, String password) {
-        Employee employee = null;
 
+        String sql = "select* from employees_credentials where email=? and password_hashed=sha2(?,256);";
+        Employee employee = null;
+        try(Connection conn = getConection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);){
+
+            pstmt.setString(1,username);
+            pstmt.setString(2,password);
+            try(ResultSet rs = pstmt.executeQuery()){
+                if(rs.next()){
+                    int employeeId = rs.getInt(1);
+                    employee = this.obtenerEmpleado(employeeId);
+                }
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         return employee;
     }
 
-    public ArrayList<EmpleadosPorRegionDto> listaEmpleadosPorRegion() {
 
+
+    public ArrayList<EmpleadosPorRegionDto> listaEmpleadosPorRegion(){
         ArrayList<EmpleadosPorRegionDto> lista = new ArrayList<>();
+        String sql = "select r.region_name, count(c.country_id) as '# empleados'\n" +
+                "from employees e\n" +
+                "inner join departments d on (e.department_id = d.department_id)\n" +
+                "inner join locations l on (l.location_id = d.location_id)\n" +
+                "inner join countries c on (c.country_id = l.country_id)\n" +
+                "inner join regions r on (c.region_id = r.region_id)\n" +
+                "group by r.region_id;";
+        try(Connection connection = getConection();
+            Statement statement = connection.createStatement();
+            ResultSet rs= statement.executeQuery(sql);) {
+            while (rs.next()){
+                EmpleadosPorRegionDto e = new EmpleadosPorRegionDto();
+                e.setNombreRegion(rs.getString(1));
+                e.setCantidadEmpleados(rs.getInt(2));
+                lista.add(e);
 
-        /*
-                Inserte su código aquí
-                 */
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return lista;
+    }
+    public ArrayList<SalarioPorDepartamentoDto> listaSalarioPorDepartamento(){
+        ArrayList<SalarioPorDepartamentoDto> lista = new ArrayList<>();
+        String sql = "select department_name,max(e.salary) as 'maxSalary', min(e.salary) as'minSalary',\n" +
+                "((max(e.salary)+min(e.salary))/2) as 'promedio'\n" +
+                "from employees e\n" +
+                "inner join departments d on e.department_id = d.department_id\n" +
+                "group by e.department_id;";
+        try(Connection connection = getConection();
+            Statement statement = connection.createStatement();
+            ResultSet rs= statement.executeQuery(sql);) {
+            while (rs.next()){
+                SalarioPorDepartamentoDto salarioPorDepartamentoDto = new SalarioPorDepartamentoDto();
+                salarioPorDepartamentoDto.setNombreDepartamento(rs.getString(1));
+                salarioPorDepartamentoDto.setSalarioMaximo(rs.getBigDecimal(2));
+                salarioPorDepartamentoDto.setSalarioMinimo(rs.getBigDecimal(3));
+                salarioPorDepartamentoDto.setSalarioPromedio(rs.getBigDecimal(4));
+                lista.add(salarioPorDepartamentoDto);
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         return lista;
     }
 }

@@ -25,9 +25,7 @@
             <% for (EmpleadosPorRegionDto emp : listaEmpRegion) {%>
             <div class="row">
                 <div class="col">
-                    <%--                        --%>
-                    <%--                        Inserte su código aquí--%>
-                    <%--                        --%>
+                   <%
 
                 </div>
             </div>
