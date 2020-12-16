@@ -1,8 +1,8 @@
 <%@page import="Beans.Employee"%>
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:useBean id="listaEmpleados" type="java.util.ArrayList<Beans.Employee>" scope="request" />
-<jsp:useBean id="rol" type="java.lang.String" scope="session" />
+<jsp:useBean id="listaEmpleados" type="ArrayList<Employee>" scope="request" />
+<jsp:useBean id="rol" type="String" scope="session" />
 <!DOCTYPE html>
 <html>
     <head>

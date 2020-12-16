@@ -24,9 +24,11 @@ public class LocationServlet extends HttpServlet {
                 RequestDispatcher view;
                 Location location;
                 int locationId;
-
+                String rol = (String) request.getSession().getAttribute("rol");
                 switch (action) {
+
                     case "crear":
+                        if (rol.equals("Top 1") || rol.equals("Top 2")) {
                             locationId = Integer.parseInt(request.getParameter("id"));
                             String streetAddress = request.getParameter("streetAddress");
                             String postalCode = request.getParameter("postalCode");
@@ -42,6 +44,9 @@ public class LocationServlet extends HttpServlet {
                                 locationDao.actualizar(locationId, streetAddress, postalCode, city, stateProvince, countryId);
                             }
                             response.sendRedirect(request.getContextPath() + "/LocationServlet");
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/LocationServlet");
+                        }
                         break;
                 }
 
@@ -56,21 +61,28 @@ public class LocationServlet extends HttpServlet {
                 Location location;
                 int locationId;
 
+        String rol = (String) request.getSession().getAttribute("rol");
+
                 switch (action) {
                     case "formCrear":
                             view = request.getRequestDispatcher("location/newLocation.jsp");
                             view.forward(request, response);
                         break;
                     case "lista":
+                        if (rol.equals("Top 1") || rol.equals("Top 2") || rol.equals("Top 3")) {
                         ArrayList<Location> lista = locationDao.listar();
 
                         request.setAttribute("lista", lista);
 
                         view = request.getRequestDispatcher("location/listaLocation.jsp");
                         view.forward(request, response);
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/EmployeeServlet");
+                        }
                         break;
 
                     case "editar":
+                        if (rol.equals("Top 1") || rol.equals("Top 3")) {
                             locationId = Integer.parseInt(request.getParameter("id"));
                             location = locationDao.obtener(locationId);
                             if (location == null) {
@@ -80,13 +92,20 @@ public class LocationServlet extends HttpServlet {
                                 view = request.getRequestDispatcher("location/updateLocation.jsp");
                                 view.forward(request, response);
                             }
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/LocationServlet");
+                        }
                         break;
                     case "borrar":
+                        if (rol.equals("Top 1") || rol.equals("Top 2")) {
                             locationId = Integer.parseInt(request.getParameter("id"));
                             if (locationDao.obtener(locationId) != null) {
                                 locationDao.borrar(locationId);
                             }
                             response.sendRedirect(request.getContextPath() + "/LocationServlet");
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/LocationServlet");
+                        }
                         break;
                 }
         }

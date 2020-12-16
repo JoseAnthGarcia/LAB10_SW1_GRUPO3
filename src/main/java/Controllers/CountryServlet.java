@@ -26,20 +26,26 @@ public class CountryServlet extends HttpServlet {
         Country country;
         String countryId;
 
+        String rol = (String) request.getSession().getAttribute("rol");
+
         switch (action) {
             case "crear":
-                countryId = request.getParameter("id");
-                String countryName = request.getParameter("countryName");
-                BigDecimal regionId = new BigDecimal(request.getParameter("regionId"));
+                if (rol.equals("Top 1") || rol.equals("Top 2")) {
+                    countryId = request.getParameter("id");
+                    String countryName = request.getParameter("countryName");
+                    BigDecimal regionId = new BigDecimal(request.getParameter("regionId"));
 
-                country = countryDao.obtener(countryId);
+                    country = countryDao.obtener(countryId);
 
-                if (country == null) {
-                    countryDao.crear(countryId, countryName, regionId);
+                    if (country == null) {
+                        countryDao.crear(countryId, countryName, regionId);
+                    } else {
+                        countryDao.actualizar(countryId, countryName, regionId);
+                    }
+                    response.sendRedirect(request.getContextPath() + "/CountryServlet");
                 } else {
-                    countryDao.actualizar(countryId, countryName, regionId);
+                    response.sendRedirect(request.getContextPath() + "/CountryServlet");
                 }
-                response.sendRedirect(request.getContextPath() + "/CountryServlet");
 
                 break;
         }
@@ -55,6 +61,8 @@ public class CountryServlet extends HttpServlet {
         RequestDispatcher view;
         Country country;
         String countryId;
+
+        String rol = (String) request.getSession().getAttribute("rol");
 
         switch (action) {
             case "formCrear":
@@ -73,7 +81,7 @@ public class CountryServlet extends HttpServlet {
                 break;
 
             case "editar":
-
+                if (rol.equals("Top 1") || rol.equals("Top 3")) {
                 countryId = request.getParameter("id");
                 country = countryDao.obtener(countryId);
                 if (country == null) {
@@ -83,15 +91,21 @@ public class CountryServlet extends HttpServlet {
                     view = request.getRequestDispatcher("country/updateCountry.jsp");
                     view.forward(request, response);
                 }
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/CountryServlet");
+                }
 
                 break;
             case "borrar":
-
-                countryId = request.getParameter("id");
-                if (countryDao.obtener(countryId) != null) {
-                    countryDao.borrar(countryId);
+                if (rol.equals("Top 1") || rol.equals("Top 2")) {
+                    countryId = request.getParameter("id");
+                    if (countryDao.obtener(countryId) != null) {
+                        countryDao.borrar(countryId);
+                    }
+                    response.sendRedirect(request.getContextPath() + "/CountryServlet");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/CountryServlet");
                 }
-                response.sendRedirect(request.getContextPath() + "/CountryServlet");
 
                 break;
         }
