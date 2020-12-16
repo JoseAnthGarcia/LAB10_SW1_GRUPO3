@@ -203,9 +203,7 @@ public class EmployeeDao extends DaoBase {
 
 
     public Employee validarUsuarioPasswordHash(String username, String password) {
-
         Employee employee = null;
-
 
         return employee;
     }

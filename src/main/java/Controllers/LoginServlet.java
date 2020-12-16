@@ -51,7 +51,9 @@ public class LoginServlet extends HttpServlet {
                 if(employee!= null && employee.getEmployeeId()>0){
                     response.sendRedirect(request.getContextPath()+"/EmployeeServlet");
                 }
-                RequestDispatcher requestDispatcher = request.getRequestDispatcher("includes/login.jsp");
+                request.setAttribute("employeeSession", employee);
+                request.setAttribute("rol", "Nose");
+                RequestDispatcher requestDispatcher = request.getRequestDispatcher("index.jsp");
                 requestDispatcher.forward(request,response);
                 break;
             case "logout":
