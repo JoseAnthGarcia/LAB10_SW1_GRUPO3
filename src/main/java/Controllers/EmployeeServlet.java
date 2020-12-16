@@ -120,10 +120,15 @@ public class EmployeeServlet extends HttpServlet {
                     view.forward(request, response);
                     break;
                 case "agregar":
+                    if (rol.equals("Top 1") || rol.equals("Top 2")) {
                         request.setAttribute("listaTrabajos", jobDao.listarTrabajos());
 
                         view = request.getRequestDispatcher("employees/formularioNuevo.jsp");
                         view.forward(request, response);
+                    } else {
+                        response.sendRedirect(request.getContextPath() + "/EmployeeServlet");
+                    }
+
                     break;
 
                 case "editar":
