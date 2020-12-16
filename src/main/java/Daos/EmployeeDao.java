@@ -206,9 +206,6 @@ public class EmployeeDao extends DaoBase {
 
         Employee employee = null;
 
-                /*
-                Inserte su código aquí
-                 */
 
         return employee;
     }

@@ -22,77 +22,88 @@ public class DepartmentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 
-            String action = request.getParameter("action") == null ? "lista" : request.getParameter("action");
+        String action = request.getParameter("action") == null ? "lista" : request.getParameter("action");
 
-            DepartmentDao departmentDao = new DepartmentDao();
-            RequestDispatcher view;
-            Department department;
-            int departmentId;
+        DepartmentDao departmentDao = new DepartmentDao();
+        RequestDispatcher view;
+        Department department;
+        int departmentId;
+        String rol = (String) request.getSession().getAttribute("rol");
+        switch (action) {
+            case "crear":
+                if (rol.equals("Top 1") || rol.equals("Top 2")) {
+                    departmentId = Integer.parseInt(request.getParameter("id"));
+                    String departmentName = request.getParameter("departmentName");
+                    int managerId = Integer.parseInt(request.getParameter("managerId"));
+                    int locationId = Integer.parseInt(request.getParameter("locationId"));
 
-            switch (action) {
-                case "crear":
+                    department = departmentDao.obtener(departmentId);
 
-                        departmentId = Integer.parseInt(request.getParameter("id"));
-                        String departmentName = request.getParameter("departmentName");
-                        int managerId = Integer.parseInt(request.getParameter("managerId"));
-                        int locationId = Integer.parseInt(request.getParameter("locationId"));
+                    if (department == null) {
+                        departmentDao.crear(departmentId, departmentName, managerId, locationId);
+                    } else {
+                        departmentDao.actualizar(departmentId, departmentName, managerId, locationId);
+                    }
+                    response.sendRedirect(request.getContextPath() + "/DepartmentServlet");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/DepartmentServlet");
+                }
 
-                        department = departmentDao.obtener(departmentId);
-
-                        if (department == null) {
-                            departmentDao.crear(departmentId, departmentName, managerId, locationId);
-                        } else {
-                            departmentDao.actualizar(departmentId, departmentName, managerId, locationId);
-                        }
-                        response.sendRedirect(request.getContextPath() + "/DepartmentServlet");
-
-                    break;
-            }
+                break;
+        }
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 
-            String action = request.getParameter("action") == null ? "lista" : request.getParameter("action");
+        String action = request.getParameter("action") == null ? "lista" : request.getParameter("action");
 
-            DepartmentDao departmentDao = new DepartmentDao();
-            RequestDispatcher view;
-            Department department;
-            int departmentId;
+        DepartmentDao departmentDao = new DepartmentDao();
+        RequestDispatcher view;
+        Department department;
+        int departmentId;
+        String rol = (String) request.getSession().getAttribute("rol");
+        switch (action) {
+            case "formCrear":
+                view = request.getRequestDispatcher("department/newDepartment.jsp");
+                view.forward(request, response);
 
-            switch (action) {
-                case "formCrear":
-                        view = request.getRequestDispatcher("department/newDepartment.jsp");
-                        view.forward(request, response);
+                break;
+            case "lista":
+                ArrayList<Department> lista = departmentDao.listar();
 
-                    break;
-                case "lista":
-                    ArrayList<Department> lista = departmentDao.listar();
+                request.setAttribute("lista", lista);
 
-                    request.setAttribute("lista", lista);
+                view = request.getRequestDispatcher("department/listaDepartment.jsp");
+                view.forward(request, response);
+                break;
 
-                    view = request.getRequestDispatcher("department/listaDepartment.jsp");
+            case "editar":
+                if (rol.equals("Top 1") || rol.equals("Top 3")) {
+                departmentId = Integer.parseInt(request.getParameter("id"));
+                department = departmentDao.obtener(departmentId);
+                if (department == null) {
+                    response.sendRedirect(request.getContextPath() + "/DepartmentServlet");
+                } else {
+                    request.setAttribute("department", department);
+                    view = request.getRequestDispatcher("department/updateDepartment.jsp");
                     view.forward(request, response);
-                    break;
-
-                case "editar":
-                        departmentId = Integer.parseInt(request.getParameter("id"));
-                        department = departmentDao.obtener(departmentId);
-                        if (department == null) {
-                            response.sendRedirect(request.getContextPath() + "/DepartmentServlet");
-                        } else {
-                            request.setAttribute("department", department);
-                            view = request.getRequestDispatcher("department/updateDepartment.jsp");
-                            view.forward(request, response);
-                        }
-                    break;
-                case "borrar":
-                        departmentId = Integer.parseInt(request.getParameter("id"));
-                        if (departmentDao.obtener(departmentId) != null) {
-                            departmentDao.borrar(departmentId);
-                        }
-                        response.sendRedirect(request.getContextPath() + "/DepartmentServlet");
-                    break;
-            }
+                }
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/DepartmentServlet");
+                }
+                break;
+            case "borrar":
+                if (rol.equals("Top 1") || rol.equals("Top 2")) {
+                departmentId = Integer.parseInt(request.getParameter("id"));
+                if (departmentDao.obtener(departmentId) != null) {
+                    departmentDao.borrar(departmentId);
+                }
+                response.sendRedirect(request.getContextPath() + "/DepartmentServlet");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/DepartmentServlet");
+                }
+                break;
         }
+    }
 }

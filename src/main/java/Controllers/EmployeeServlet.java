@@ -30,10 +30,10 @@ public class EmployeeServlet extends HttpServlet {
             Employee employee;
             EmployeeDao employeeDao = new EmployeeDao();
             JobDao jobDao = new JobDao();
-
+            String rol = (String) request.getSession().getAttribute("rol");
             switch (action) {
                 case "guardar":
-
+                    if (rol.equals("Top 1") || rol.equals("Top 2")) {
                         Employee e = new Employee();
                         e.setFirstName(request.getParameter("first_name"));
                         e.setLastName(request.getParameter("last_name"));
@@ -56,6 +56,9 @@ public class EmployeeServlet extends HttpServlet {
                         employeeDao.guardarEmpleado(e);
 
                         response.sendRedirect("EmployeeServlet");
+                    } else {
+                        response.sendRedirect(request.getContextPath() + "/EmployeeServlet");
+                    }
 
                     break;
                 case "actualizar":
@@ -108,6 +111,8 @@ public class EmployeeServlet extends HttpServlet {
             EmployeeDao employeeDao = new EmployeeDao();
             JobDao jobDao = new JobDao();
 
+        String rol = (String) request.getSession().getAttribute("rol");
+
             switch (action) {
                 case "lista":
                     request.setAttribute("listaEmpleados", employeeDao.listarEmpleados());
@@ -122,6 +127,7 @@ public class EmployeeServlet extends HttpServlet {
                     break;
 
                 case "editar":
+                    if (rol.equals("Top 1") || rol.equals("Top 3")) {
                         if (request.getParameter("id") != null) {
                             String employeeIdString = request.getParameter("id");
                             int employeeId = 0;
@@ -148,9 +154,13 @@ public class EmployeeServlet extends HttpServlet {
                         } else {
                             response.sendRedirect("EmployeeServlet");
                         }
+                    } else {
+                        response.sendRedirect(request.getContextPath() + "/EmployeeServlet");
+                    }
 
                     break;
                 case "borrar":
+                    if (rol.equals("Top 1") || rol.equals("Top 2")) {
                         if (request.getParameter("id") != null) {
                             String employeeIdString = request.getParameter("id");
                             int employeeId = 0;
@@ -168,6 +178,9 @@ public class EmployeeServlet extends HttpServlet {
                         }
 
                         response.sendRedirect("EmployeeServlet");
+                    } else {
+                        response.sendRedirect(request.getContextPath() + "/EmployeeServlet");
+                    }
 
                     break;
                 case "est":
