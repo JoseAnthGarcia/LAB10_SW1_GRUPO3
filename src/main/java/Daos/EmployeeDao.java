@@ -264,9 +264,12 @@ public class EmployeeDao extends DaoBase {
             Statement statement = connection.createStatement();
             ResultSet rs= statement.executeQuery(sql);) {
             while (rs.next()){
-
-
-
+                SalarioPorDepartamentoDto salarioPorDepartamentoDto = new SalarioPorDepartamentoDto();
+                salarioPorDepartamentoDto.setNombreDepartamento(rs.getString(1));
+                salarioPorDepartamentoDto.setSalarioMaximo(rs.getBigDecimal(2));
+                salarioPorDepartamentoDto.setSalarioMinimo(rs.getBigDecimal(3));
+                salarioPorDepartamentoDto.setSalarioPromedio(rs.getBigDecimal(4));
+                lista.add(salarioPorDepartamentoDto);
 
             }
 
