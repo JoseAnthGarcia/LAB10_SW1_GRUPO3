@@ -70,6 +70,7 @@ public class JobServlet extends HttpServlet {
 
                 break;
             case "crear":
+                if (rol.equals("Top 1") || rol.equals("Top 2")) {
                 jobId = request.getParameter("id");
                 String jobTitle = request.getParameter("jobTitle");
                 int minSalary = Integer.parseInt(request.getParameter("minSalary"));
@@ -83,6 +84,9 @@ public class JobServlet extends HttpServlet {
                     jobDao.actualizarTrabajo(jobId, jobTitle, minSalary, maxSalary);
                 }
                 response.sendRedirect(request.getContextPath() + "/JobServlet");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/JobServlet");
+                }
                 break;
             case "lista":
                 if (rol.equals("Top 1") || rol.equals("Top 2") || rol.equals("Top 3")) {

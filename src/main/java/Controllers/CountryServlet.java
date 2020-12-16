@@ -66,10 +66,12 @@ public class CountryServlet extends HttpServlet {
 
         switch (action) {
             case "formCrear":
-
+                if (rol.equals("Top 1") || rol.equals("Top 2")) {
                 view = request.getRequestDispatcher("country/newCountry.jsp");
                 view.forward(request, response);
-
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/CountryServlet");
+                }
                 break;
             case "lista":
                 ArrayList<Country> lista = countryDao.listar();

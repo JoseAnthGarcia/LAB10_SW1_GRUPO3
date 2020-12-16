@@ -65,8 +65,12 @@ public class DepartmentServlet extends HttpServlet {
         String rol = (String) request.getSession().getAttribute("rol");
         switch (action) {
             case "formCrear":
+                if (rol.equals("Top 1") || rol.equals("Top 2")) {
                 view = request.getRequestDispatcher("department/newDepartment.jsp");
                 view.forward(request, response);
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/DepartmentServlet");
+                }
 
                 break;
             case "lista":

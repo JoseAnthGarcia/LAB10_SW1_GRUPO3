@@ -65,8 +65,12 @@ public class LocationServlet extends HttpServlet {
 
                 switch (action) {
                     case "formCrear":
+                        if (rol.equals("Top 1") || rol.equals("Top 2")) {
                             view = request.getRequestDispatcher("location/newLocation.jsp");
                             view.forward(request, response);
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/LocationServlet");
+                        }
                         break;
                     case "lista":
                         if (rol.equals("Top 1") || rol.equals("Top 2") || rol.equals("Top 3")) {
