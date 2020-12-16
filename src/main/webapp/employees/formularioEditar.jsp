@@ -3,6 +3,7 @@
 <%@page import="Beans.Employee"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <jsp:useBean id="empleado" type="Employee" scope="request" />
+<jsp:useBean id="listaJobHistory" type="java.util.ArrayList<Beans.JobHistory>" scope="request" />
 <!DOCTYPE html>
 <html>
     <head>
@@ -85,9 +86,27 @@
                     </tr>
                 </thead>
                 <tbody>
-                <%--                        --%>
-                <%--                        Inserte su código aquí--%>
-                <%--                        --%>
+                <%
+                    int c = 1;
+                    for (JobHistory j : listaJobHistory) {
+                %>
+                <tr>
+                    <td><%= c%>
+                    </td>
+                    <td><%= j.getStartDate()%>
+                    </td>
+                    <td><%= j.getEndDate()%>
+                    </td>
+                    <td><%= j.getJob().getJobTitle()%>
+                    </td>
+                    <td><%= j.getDepartment().getDepartmentName()%>
+                    </td>
+
+                </tr>
+                <%
+                        c++;
+                    }
+                %>
                 </tbody>
             </table>
             <% } else { %>
