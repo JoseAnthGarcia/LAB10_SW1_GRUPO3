@@ -30,8 +30,44 @@ public class LoginServlet extends HttpServlet {
                 Employee employee = employeeDao.validarUsuarioPasswordHash(inputEmail, inputPassword);
                 if(employee!=null){
                     HttpSession session =request.getSession();
-                    session.setAttribute("rol",employee);
-                    response.sendRedirect(request.getContextPath()+"/EmployeeServlet");
+                    session.setAttribute("employeeSession", employee);
+
+                    String rol = "";
+                    int maxSal = employee.getJob().getMaxSalary();
+                    int minSal = employee.getJob().getMinSalary();
+
+                    if(maxSal>15000 || employeeDao.validarJefeDepart(employee.getEmployeeId())){
+                        rol = "Top 1";
+                    }
+
+                    if(maxSal<=15000 && minSal>8500 && !employeeDao.validarJefeDepart(employee.getEmployeeId())){
+                        rol = "Top 2";
+                    }
+
+                    if(maxSal<=8500 && minSal>5000 && !employeeDao.validarJefeDepart(employee.getEmployeeId())){
+                        rol = "Top 3";
+                    }
+
+                    if(maxSal<=5000 && !employeeDao.validarJefeDepart(employee.getEmployeeId())){
+                        rol = "Top 4";
+                    }
+
+                    session.setAttribute("rol", rol);
+
+                    switch (rol){
+                        case "Top 1":
+                            response.sendRedirect(request.getContextPath() + "/EmployeeServlet");
+                            break;
+                        case "Top 2":
+                            response.sendRedirect(request.getContextPath() + "/JobServlet");
+                            break;
+                        case "Top 3":
+                            response.sendRedirect(request.getContextPath() + "/DepartmentServlet");
+                            break;
+                        case "Top 4":
+                            response.sendRedirect(request.getContextPath() + "/CountryServlet");
+                            break;
+                    }
                 }else{
                     response.sendRedirect(request.getContextPath()+"/LoginServlet?error");
                 }
@@ -52,7 +88,7 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect(request.getContextPath()+"/EmployeeServlet");
                 }
                 request.setAttribute("employeeSession", employee);
-                request.setAttribute("rol", "Nose");
+                request.setAttribute("rol", session.getAttribute("rol"));
                 RequestDispatcher requestDispatcher = request.getRequestDispatcher("index.jsp");
                 requestDispatcher.forward(request,response);
                 break;

@@ -226,7 +226,24 @@ public class EmployeeDao extends DaoBase {
         return employee;
     }
 
+    public boolean validarJefeDepart(int idEmployee){
+        String sql = "select * from departments where manager_id=?;";
+        boolean esJefe = false;
+        try(Connection conn = getConection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);){
 
+            pstmt.setInt(1,idEmployee);
+            try(ResultSet rs = pstmt.executeQuery()){
+                if(rs.next()){
+                    esJefe = true;
+                }
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return esJefe;
+    }
 
     public ArrayList<EmpleadosPorRegionDto> listaEmpleadosPorRegion(){
         ArrayList<EmpleadosPorRegionDto> lista = new ArrayList<>();
@@ -253,6 +270,7 @@ public class EmployeeDao extends DaoBase {
         }
         return lista;
     }
+
     public ArrayList<SalarioPorDepartamentoDto> listaSalarioPorDepartamento(){
         ArrayList<SalarioPorDepartamentoDto> lista = new ArrayList<>();
         String sql = "select department_name,max(e.salary) as 'maxSalary', min(e.salary) as'minSalary',\n" +

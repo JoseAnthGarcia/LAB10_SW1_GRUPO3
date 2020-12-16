@@ -112,7 +112,7 @@ public class EmployeeServlet extends HttpServlet {
             EmployeeDao employeeDao = new EmployeeDao();
             JobDao jobDao = new JobDao();
 
-        String rol = (String) request.getSession().getAttribute("rol");
+            String rol = (String) request.getSession().getAttribute("rol");
 
             switch (action) {
                 case "lista":
