@@ -262,7 +262,6 @@ public class EmployeeDao extends DaoBase {
                 e.setNombreRegion(rs.getString(1));
                 e.setCantidadEmpleados(rs.getInt(2));
                 lista.add(e);
-
             }
 
         } catch (SQLException throwables) {
