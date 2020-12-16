@@ -104,9 +104,11 @@ public class EmployeeServlet extends HttpServlet {
             String action = request.getParameter("action") == null ? "lista" : request.getParameter("action");
 
             RequestDispatcher view;
-            Employee employee;
+            HttpSession session = request.getSession();
+            Employee employee = (Employee) session.getAttribute("employee");;
             EmployeeDao employeeDao = new EmployeeDao();
             JobDao jobDao = new JobDao();
+
 
             switch (action) {
                 case "lista":

@@ -1,5 +1,6 @@
 package Controllers;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import Beans.Employee;
@@ -23,25 +24,44 @@ public class LoginServlet extends HttpServlet {
 
         switch (action) {
             case "login":
-                /*
-                Inserte su código aquí
-                 */
+                String inputEmail = request.getParameter("inputEmail");
+                String inputPassword = request.getParameter("inputPassword");
+                EmployeeDao employeeDao= new EmployeeDao();
+                Employee employee = employeeDao.validarUsuarioPasswordHash(inputEmail, inputPassword);
+                if(employee!=null){
+                    HttpSession session =request.getSession();
+                    session.setAttribute("rol",employee);
+                    response.sendRedirect(request.getContextPath()+"/EmployeeServlet");
+                }else{
+                    response.sendRedirect(request.getContextPath()+"/LoginServlet?error");
+                }
                 break;
         }
+
 
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action") == null ? "login" : request.getParameter("action");
-
-
-
-        switch (action) {
-            case "logout":
-                /*
-                Inserte su código aquí
-                 */
+        String accion = request.getParameter("accion")!=null?
+                request.getParameter("accion"): "login";
+        HttpSession session = request.getSession();
+        switch (accion){
+            case "login":
+                Employee employee = (Employee) session.getAttribute("employee");
+                if(employee!= null && employee.getEmployeeId()>0){
+                    response.sendRedirect(request.getContextPath()+"/EmployeeServlet");
+                }
+                RequestDispatcher requestDispatcher = request.getRequestDispatcher("includes/login.jsp");
+                requestDispatcher.forward(request,response);
                 break;
+            case "logout":
+
+                session.invalidate();
+                response.sendRedirect(request.getContextPath()+"/EmployeeServlet");
+                break;
+
+
         }
+
     }
 }
