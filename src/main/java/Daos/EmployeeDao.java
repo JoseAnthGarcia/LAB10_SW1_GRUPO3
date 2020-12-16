@@ -247,6 +247,7 @@ public class EmployeeDao extends DaoBase {
 
     public ArrayList<EmpleadosPorRegionDto> listaEmpleadosPorRegion(){
         ArrayList<EmpleadosPorRegionDto> lista = new ArrayList<>();
+
         String sql = "select r.region_name, count(c.country_id) as '# empleados'\n" +
                 "from employees e\n" +
                 "inner join departments d on (e.department_id = d.department_id)\n" +
@@ -257,13 +258,15 @@ public class EmployeeDao extends DaoBase {
         try(Connection connection = getConection();
             Statement statement = connection.createStatement();
             ResultSet rs= statement.executeQuery(sql);) {
-            while (rs.next()){
-                EmpleadosPorRegionDto e = new EmpleadosPorRegionDto();
-                e.setNombreRegion(rs.getString(1));
-                e.setCantidadEmpleados(rs.getInt(2));
-                lista.add(e);
 
-            }
+                while (rs.next()) {
+                    EmpleadosPorRegionDto e = new EmpleadosPorRegionDto();
+                    e.setNombreRegion(rs.getString(1));
+                    e.setCantidadEmpleados(rs.getInt(2));
+                    lista.add(e);
+
+                }
+
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
