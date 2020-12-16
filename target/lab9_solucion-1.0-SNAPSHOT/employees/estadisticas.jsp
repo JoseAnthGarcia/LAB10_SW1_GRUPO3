@@ -25,7 +25,7 @@
             <% for (EmpleadosPorRegionDto emp : listaEmpRegion) {%>
             <div class="row">
                 <div class="col">
-                   <%emp.getNombreRegion();%>:<%emp.getCantidadEmpleados();%>
+                   <%=emp.getNombreRegion()%>:<%=emp.getCantidadEmpleados()%>
 
                 </div>
             </div>
