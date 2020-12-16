@@ -33,9 +33,13 @@ public class JobHistoryDao extends DaoBase {
                     jobHistory.setEmployeeId(rs.getInt(1));
                     jobHistory.setStartDate(rs.getString(2));
                     jobHistory.setEndDate(rs.getString(3));
-                    jobHistory.getJob().setJobTitle(rs.getString(4));
-                    jobHistory.getDepartment().setDepartmentName(rs.getString(5));
-
+                    Job job = new Job();
+                    job.setJobTitle(rs.getString(4));
+                    jobHistory.setJob(job);
+                    Department department = new Department();
+                    department.setDepartmentName(rs.getString(5));
+                    jobHistory.setDepartment(department);
+                    lista.add(jobHistory);
                 }
             }
 
